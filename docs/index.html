@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashfile MCP Server - Reliable AI-Powered File Editing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0e27;
+            --bg-darker: #050814;
+            --accent-blue: #00d4ff;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --border-glow: rgba(0, 212, 255, 0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at top, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(0, 212, 255, 0.15) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            padding: 2rem 0;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .version-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--accent-blue);
+            border-radius: 2rem;
+            color: var(--accent-blue);
+            font-weight: 600;
+            margin-bottom: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+        }
+
+        /* CTA Buttons */
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-blue);
+        }
+
+        /* Features Grid */
+        .features {
+            /* padding: 4rem 0; */
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-right: 1rem;
+            float: left;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-blue);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+        }
+
+        /* Code Example */
+        .code-example {
+            background: var(--bg-darker);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 3rem 0;
+            overflow-x: auto;
+        }
+
+        .code-example pre {
+            color: var(--text-secondary);
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .code-example .keyword {
+            color: var(--accent-purple);
+        }
+
+        .code-example .string {
+            color: var(--accent-blue);
+        }
+
+        .code-example .number {
+            color: var(--accent-pink);
+        }
+
+        .code-example .comment {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        /* Download Section */
+        .downloads {
+            padding: 4rem;
+            background: var(--card-bg);
+            border-radius: 2rem;
+            margin: 4rem 0;
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .download-card {
+            background: var(--bg-darker);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: block;
+        }
+
+        .download-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.2);
+        }
+
+        .download-card .platform {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .download-card .platform-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .download-card .arch {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 4rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .hashline-demo {
+            background: var(--bg-darker);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            width: fit-content;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .hashline-demo .line {
+            padding: 0.25rem 0;
+            text-align: left;
+            line-height: 0.7rem;
+        }
+
+        .hashline-demo .line-num {
+            color: var(--accent-purple);
+            margin-right: 0.5rem;
+        }
+
+        .hashline-demo .hash {
+            color: var(--accent-blue);
+            margin-right: 0.5rem;
+        }
+
+        .hashline-demo .content {
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gradient-bg"></div>
+
+    <header>
+        <div class="container">
+            <div class="logo">⚡ Hashfile MCP</div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="version-badge">🎉 v0.1.0 Released</div>
+                <h1 class="animate-in">Reliable AI-Powered<br>File Editing</h1>
+                <p class="subtitle animate-in">
+                    Hash-anchored operations ensure your AI agents edit the right lines, every time.
+                    No more stale edits, no more data corruption.
+                </p>
+                <div class="cta-buttons animate-in">
+                    <a href="https://github.com/mrorigo/hashfile-mcp/releases/tag/v0.1.0" class="btn btn-primary">
+                        📦 Download v0.1.0
+                    </a>
+                    <a href="https://github.com/mrorigo/hashfile-mcp" class="btn btn-secondary">
+                        ⭐ View on GitHub
+                    </a>
+                </div>
+
+                <div class="hashline-demo">
+                    <div class="line">
+                        <span class="line-num">1:</span><span class="hash">a3</span><span class="content">|function
+                            calculateTotal(items) {</span>
+                    </div>
+                    <div class="line">
+                        <span class="line-num">2:</span><span class="hash">7f</span><span class="content">| return
+                            items.reduce((sum, item) => sum + item.price, 0);</span>
+                    </div>
+                    <div class="line">
+                        <span class="line-num">3:</span><span class="hash">2c</span><span class="content">|}</span>
+                    </div>
+                    <div
+                        style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); color: var(--text-secondary); font-size: 0.8rem;">
+                        file_hash: 8f3a9b2c... • total_lines: 3 • hashline_version: 1
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Why Hashfile?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Hash-Anchored Editing</h3>
+                        <p>Every line tagged with a content hash. Edits target the correct location even if line numbers
+                            change.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Content Verification</h3>
+                        <p>File-level SHA-256 hashing prevents editing stale content. Optimistic locking for AI agents.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🧠</div>
+                        <h3>Fuzzy Matching</h3>
+                        <p>Automatically finds the correct line if content has shifted. Resilient to minor changes.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>MCP Protocol</h3>
+                        <p>Standard Model Context Protocol for seamless AI agent integration. Full MCP Roots compliance
+                            for secure path validation.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🦀</div>
+                        <h3>Built with Rust</h3>
+                        <p>Fast, safe, and reliable. Zero-cost abstractions with memory safety guarantees.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📦</div>
+                        <h3>Zero Dependencies</h3>
+                        <p>Single binary, no runtime dependencies. Download and run. Works on Linux, macOS, and Windows.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="container">
+            <h2 class="section-title">Quick Start</h2>
+            <div class="code-example">
+                <pre><span class="comment">// 1. Download the binary for your platform</span>
+<span class="keyword">curl</span> -L https://github.com/mrorigo/hashfile-mcp/releases/download/v0.1.0/hashfile-mcp-<span class="string">YOUR_PLATFORM</span>.tar.gz | tar xz
+
+<span class="comment">// 2. Add to your MCP client config (e.g., Claude Desktop)</span>
+{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"hashfile"</span>: {
+      <span class="string">"command"</span>: <span class="string">"/path/to/hashfile-mcp"</span>
+    }
+  }
+}
+
+<span class="comment">// 3. Use the tools in your AI agent</span>
+<span class="keyword">read_text_file</span>({ <span class="string">"path"</span>: <span class="string">"/path/to/file.txt"</span> })
+<span class="keyword">edit_text_file</span>({
+  <span class="string">"path"</span>: <span class="string">"/path/to/file.txt"</span>,
+  <span class="string">"file_hash"</span>: <span class="string">"abc123..."</span>,
+  <span class="string">"operations"</span>: [...]
+})</pre>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="downloads">
+                <h2 class="section-title">Download v0.1.0</h2>
+                <div class="download-grid">
+                    <a href="https://github.com/mrorigo/hashfile-mcp/releases/download/v0.1.0/hashfile-mcp-aarch64-unknown-linux-gnu.tar.gz"
+                        class="download-card">
+                        <div class="platform">🐧</div>
+                        <div class="platform-name">Linux (ARM64)</div>
+                        <div class="arch">aarch64-unknown-linux-gnu</div>
+                    </a>
+                    <a href="https://github.com/mrorigo/hashfile-mcp/releases/download/v0.1.0/hashfile-mcp-x86_64-unknown-linux-gnu.tar.gz"
+                        class="download-card">
+                        <div class="platform">🐧</div>
+                        <div class="platform-name">Linux (x86_64)</div>
+                        <div class="arch">x86_64-unknown-linux-gnu</div>
+                    </a>
+                    <a href="https://github.com/mrorigo/hashfile-mcp/releases/download/v0.1.0/hashfile-mcp-x86_64-unknown-linux-musl.tar.gz"
+                        class="download-card">
+                        <div class="platform">🐧</div>
+                        <div class="platform-name">Linux (musl)</div>
+                        <div class="arch">x86_64-unknown-linux-musl</div>
+                    </a>
+                    <a href="https://github.com/mrorigo/hashfile-mcp/releases/download/v0.1.0/hashfile-mcp-aarch64-apple-darwin.tar.gz"
+                        class="download-card">
+                        <div class="platform">🍎</div>
+                        <div class="platform-name">macOS (Apple Silicon)</div>
+                        <div class="arch">aarch64-apple-darwin</div>
+                    </a>
+                    <a href="https://github.com/mrorigo/hashfile-mcp/releases/download/v0.1.0/hashfile-mcp-x86_64-apple-darwin.tar.gz"
+                        class="download-card">
+                        <div class="platform">🍎</div>
+                        <div class="platform-name">macOS (Intel)</div>
+                        <div class="arch">x86_64-apple-darwin</div>
+                    </a>
+                    <a href="https://github.com/mrorigo/hashfile-mcp/releases/download/v0.1.0/hashfile-mcp-x86_64-pc-windows-msvc.zip"
+                        class="download-card">
+                        <div class="platform">🪟</div>
+                        <div class="platform-name">Windows</div>
+                        <div class="arch">x86_64-pc-windows-msvc</div>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/mrorigo/hashfile-mcp">GitHub</a>
+                <a href="https://github.com/mrorigo/hashfile-mcp/blob/main/README.md">Documentation</a>
+                <a href="https://github.com/mrorigo/hashfile-mcp/issues">Issues</a>
+                <a href="https://blog.can.ac/2026/02/12/the-harness-problem/">Blog Post</a>
+            </div>
+            <p style="color: var(--text-secondary); margin-top: 1rem;">
+                Built with ⚡ by the Hashfile team • Licensed under MIT
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .download-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add sparkle effect on hover for download cards
+        document.querySelectorAll('.download-card').forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.style.background = 'linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(168, 85, 247, 0.1))';
+            });
+            card.addEventListener('mouseleave', function () {
+                this.style.background = 'var(--bg-darker)';
+            });
+        });
+    </script>
+</body>
+
+</html>
