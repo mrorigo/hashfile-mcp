@@ -57,6 +57,23 @@ total_lines: 3
 file_hash: abc123...
 ```
 
+#### `write_text_file`
+
+**Description:** Write content to a file, creating it if it doesn't exist
+
+**Input:**
+```json
+{
+  "path": "/absolute/path/to/file.txt",
+  "content": "File content to write"
+}
+```
+
+**Output:**
+```
+Successfully wrote 21 bytes to /absolute/path/to/file.txt
+```
+
 #### `edit_text_file`
 
 **Description:** Edit a file using hash-anchored operations

@@ -14,6 +14,14 @@ pub struct ReadTextInput {
 }
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
+pub struct WriteTextInput {
+    #[schemars(description = "Absolute path to the file to write")]
+    pub path: String,
+    #[schemars(description = "Content to write to the file")]
+    pub content: String,
+}
+
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct EditTextInput {
     #[schemars(description = "Absolute path to the file to edit")]
     pub path: String,
@@ -60,6 +68,14 @@ impl HashfileServer {
         }
     }
 
+    #[rmcp::tool(description = "Write content to a file, creating it if it doesn't exist")]
+    fn write_text_file(&self, Parameters(input): Parameters<WriteTextInput>) -> String {
+        match Self::write_text_file_impl(&input.path, &input.content) {
+            Ok(msg) => msg,
+            Err(e) => format!("Error: {}", e),
+        }
+    }
+
     #[rmcp::tool(description = "Edit a file using hash-anchored operations")]
     fn edit_text_file(&self, Parameters(input): Parameters<EditTextInput>) -> String {
         match Self::edit_text_file_impl(&input.path, &input.file_hash, input.operations) {
@@ -82,6 +98,11 @@ impl HashfileServer {
         );
 
         Ok(output)
+    }
+
+    fn write_text_file_impl(path: &str, content: &str) -> anyhow::Result<String> {
+        fs::write(path, content)?;
+        Ok(format!("Successfully wrote {} bytes to {}", content.len(), path))
     }
 
     fn edit_text_file_impl(
