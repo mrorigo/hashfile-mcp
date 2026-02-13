@@ -13,15 +13,15 @@
         }
 
         :root {
-            --bg-dark: #0a0e27;
-            --bg-darker: #050814;
-            --accent-blue: #00d4ff;
-            --accent-purple: #a855f7;
-            --accent-pink: #ec4899;
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --card-bg: rgba(15, 23, 42, 0.6);
-            --border-glow: rgba(0, 212, 255, 0.3);
+            --bg-dark: #0f1419;
+            --bg-darker: #0a0e14;
+            --accent-blue: #39bae6;
+            --accent-steel: #59c2ff;
+            --accent-slate: #64748b;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --card-bg: rgba(22, 27, 34, 0.6);
+            --border-glow: rgba(57, 186, 230, 0.3);
         }
 
         body {
@@ -39,8 +39,8 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: radial-gradient(ellipse at top, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at bottom, rgba(0, 212, 255, 0.15) 0%, transparent 50%);
+            background: radial-gradient(ellipse at top, rgba(57, 186, 230, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(100, 116, 139, 0.08) 0%, transparent 50%);
         }
 
         .container {
@@ -59,7 +59,7 @@
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-steel));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -75,7 +75,7 @@
             font-size: 4rem;
             font-weight: 800;
             margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-pink));
+            background: linear-gradient(135deg, var(--accent-steel), var(--accent-blue), #7dd3fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -141,9 +141,9 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-steel));
             color: white;
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(57, 186, 230, 0.3);
         }
 
         .btn-primary:hover {
@@ -231,7 +231,7 @@
         }
 
         .code-example .keyword {
-            color: var(--accent-purple);
+            color: var(--accent-steel);
         }
 
         .code-example .string {
@@ -239,11 +239,11 @@
         }
 
         .code-example .number {
-            color: var(--accent-pink);
+            color: #7dd3fc;
         }
 
         .code-example .comment {
-            color: #64748b;
+            color: var(--accent-slate);
             font-style: italic;
         }
 
@@ -357,37 +357,176 @@
             animation: fadeInUp 0.6s ease-out forwards;
         }
 
-        .hashline-demo {
+        /* Demo Section */
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 3rem;
+            margin: 3rem 0;
+            align-items: start;
+        }
+
+        .demo-editorial {
+            padding: 2rem 0;
+        }
+
+        .demo-editorial h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-steel);
+        }
+
+        .demo-editorial p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .demo-editorial code {
             background: var(--bg-darker);
-            border: 1px solid rgba(168, 85, 247, 0.3);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin: 2rem auto;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            color: var(--accent-blue);
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .demo-feature {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(57, 186, 230, 0.05);
+            border-left: 3px solid var(--accent-blue);
+            border-radius: 0.5rem;
+        }
+
+        .demo-feature .demo-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .demo-feature strong {
+            display: block;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .demo-feature p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .demo-terminal {
+            background: var(--bg-darker);
+            border: 1px solid rgba(57, 186, 230, 0.2);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: rgba(57, 186, 230, 0.1);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid rgba(57, 186, 230, 0.2);
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-slate);
+        }
+
+        .terminal-title {
+            margin-left: auto;
             font-family: 'Monaco', 'Courier New', monospace;
             font-size: 0.85rem;
-            width: fit-content;
-            max-width: 100%;
+            color: var(--accent-blue);
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
             text-align: left;
         }
 
-        .hashline-demo .line {
+        .terminal-line {
             padding: 0.25rem 0;
-            text-align: left;
-            line-height: 0.7rem;
+            line-height: 0.9;
         }
 
-        .hashline-demo .line-num {
-            color: var(--accent-purple);
+        .terminal-line .line-num {
+            color: var(--accent-slate);
             margin-right: 0.5rem;
         }
 
-        .hashline-demo .hash {
+        .terminal-line .hash {
             color: var(--accent-blue);
             margin-right: 0.5rem;
         }
 
-        .hashline-demo .content {
+        .terminal-line .content {
             color: var(--text-secondary);
+        }
+
+        .terminal-line.highlight {
+            background: rgba(57, 186, 230, 0.1);
+            margin: 0 -1rem;
+            padding: 0.25rem 1rem;
+        }
+
+        .terminal-meta {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .meta-label {
+            color: var(--accent-slate);
+        }
+
+        .meta-sep {
+            margin: 0 0.5rem;
+            color: var(--accent-slate);
+        }
+
+        .terminal-command {
+            padding: 0.5rem 0;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .terminal-command .prompt {
+            color: var(--accent-blue);
+            margin-right: 0.5rem;
+        }
+
+        .terminal-command .anchor-ref {
+            color: var(--accent-steel);
+            font-weight: 600;
+        }
+
+        .terminal-success {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(57, 186, 230, 0.1);
+            border-left: 3px solid var(--accent-blue);
+            color: var(--accent-blue);
+            border-radius: 0.25rem;
+        }
+
+        @media (max-width: 968px) {
+            .demo-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
         }
     </style>
 </head>
@@ -419,23 +558,88 @@
                     </a>
                 </div>
 
-                <div class="hashline-demo">
-                    <div class="line">
-                        <span class="line-num">1:</span><span class="hash">a3</span><span class="content">|function
-                            calculateTotal(items) {</span>
+
+                <div class="demo-container">
+                    <div class="demo-editorial">
+                        <h3>How It Works</h3>
+                        <p>Every line gets a unique fingerprint—a 2-character hash of its content. When your AI agent
+                            wants to edit line 2, it references <code>2:7f</code> instead of just "line 2".</p>
+
+                        <p>If someone inserts a line above, the old line 2 becomes line 3—but its hash stays
+                            <code>7f</code>. Hashfile finds it automatically.
+                        </p>
+
+                        <div class="demo-feature">
+                            <span class="demo-icon">🎯</span>
+                            <div>
+                                <strong>Content-Addressed</strong>
+                                <p>Anchors reference what the line says, not where it is</p>
+                            </div>
+                        </div>
+
+                        <div class="demo-feature">
+                            <span class="demo-icon">🔒</span>
+                            <div>
+                                <strong>Verified Edits</strong>
+                                <p>File hash prevents editing stale content</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="line">
-                        <span class="line-num">2:</span><span class="hash">7f</span><span class="content">| return
-                            items.reduce((sum, item) => sum + item.price, 0);</span>
-                    </div>
-                    <div class="line">
-                        <span class="line-num">3:</span><span class="hash">2c</span><span class="content">|}</span>
-                    </div>
-                    <div
-                        style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); color: var(--text-secondary); font-size: 0.8rem;">
-                        file_hash: 8f3a9b2c... • total_lines: 3 • hashline_version: 1
+
+                    <div class="demo-terminal">
+                        <div class="terminal-header">
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-title">read_text_file</span>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-line">
+                                <span class="line-num">1:</span><span class="hash">a3</span><span
+                                    class="content">|function calculateTotal(items) {</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="line-num">2:</span><span class="hash">7f</span><span class="content">|
+                                    return items.reduce((sum, item) => sum + item.price, 0);</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="line-num">3:</span><span class="hash">2c</span><span
+                                    class="content">|}</span>
+                            </div>
+                            <div class="terminal-meta">
+                                <span class="meta-label">file_hash:</span> 8f3a9b2c4d5e6f7a
+                                <span class="meta-sep">•</span>
+                                <span class="meta-label">total_lines:</span> 3
+                            </div>
+                        </div>
+
+                        <div class="terminal-header" style="margin-top: 1.5rem;">
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-title">edit_text_file</span>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-command">
+                                <span class="prompt">$</span> edit at anchor <span class="anchor-ref">2:7f</span>
+                            </div>
+                            <div class="terminal-line success">
+                                <span class="line-num">1:</span><span class="hash">a3</span><span
+                                    class="content">|function calculateTotal(items) {</span>
+                            </div>
+                            <div class="terminal-line success highlight">
+                                <span class="line-num">2:</span><span class="hash">b9</span><span class="content">|
+                                    return items.reduce((sum, i) => sum + i.price * i.qty, 0);</span>
+                            </div>
+                            <div class="terminal-line success">
+                                <span class="line-num">3:</span><span class="hash">2c</span><span
+                                    class="content">|}</span>
+                            </div>
+                            <div class="terminal-success">✓ Edit applied successfully</div>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </section>
 
@@ -587,7 +791,7 @@
         // Add sparkle effect on hover for download cards
         document.querySelectorAll('.download-card').forEach(card => {
             card.addEventListener('mouseenter', function () {
-                this.style.background = 'linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(168, 85, 247, 0.1))';
+                this.style.background = 'linear-gradient(135deg, rgba(57, 186, 230, 0.1), rgba(89, 194, 255, 0.1))';
             });
             card.addEventListener('mouseleave', function () {
                 this.style.background = 'var(--bg-darker)';
