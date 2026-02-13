@@ -1,6 +1,5 @@
 use anyhow::{anyhow, Result};
 use fnv::FnvHasher;
-use sha2::{Digest, Sha256};
 use std::hash::Hasher;
 
 /// Computes the 2-character hex hash of a line's content (trimmed of trailing whitespace).
@@ -23,11 +22,15 @@ pub fn tag_content(content: &str) -> String {
     result
 }
 
-/// Computes a SHA-256 hash of the entire file content.
+/// Computes a 6-character hex hash of the entire file content using FNV.
+/// This is shorter and more agent-friendly than SHA-256 while providing
+/// sufficient collision resistance for practical file editing scenarios.
 pub fn compute_file_hash(content: &str) -> String {
-    let mut hasher = Sha256::new();
-    hasher.update(content.as_bytes());
-    hex::encode(hasher.finalize())
+    let mut hasher = FnvHasher::default();
+    hasher.write(content.as_bytes());
+    let hash = hasher.finish();
+    // Use 24 bits (6 hex chars) for reasonable collision resistance
+    format!("{:06x}", hash & 0xFFFFFF)
 }
 
 #[derive(Debug, Clone, PartialEq)]

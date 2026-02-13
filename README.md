@@ -5,7 +5,7 @@ A Model Context Protocol (MCP) server that provides reliable file editing throug
 ## Features
 
 - **Hash-Anchored Editing**: Every line is tagged with a content hash, ensuring edits target the correct location even if line numbers change
-- **Content Verification**: File-level SHA-256 hashing prevents editing stale content
+- **Content Verification**: File-level 6-character hashing prevents editing stale content
 - **Fuzzy Matching**: Automatically finds the correct line if content has shifted
 - **MCP Protocol**: Standard Model Context Protocol for AI agent integration
 
@@ -54,7 +54,7 @@ Add to your MCP client configuration (e.g., Claude Desktop):
 ---
 hashline_version: 1
 total_lines: 3
-file_hash: abc123...
+file_hash: 8f3a9b
 ```
 
 #### `write_text_file`
@@ -144,7 +144,7 @@ src/
 - **Language**: Rust (edition 2021)
 - **MCP SDK**: rmcp 0.15.0
 - **Line Hashing**: FNV-1a (2 hex chars)
-- **File Hashing**: SHA-256
+- **File Hashing**: FNV-1a (6 hex chars)
 - **Transport**: stdio
 
 ## License

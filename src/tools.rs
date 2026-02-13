@@ -25,7 +25,7 @@ pub struct WriteTextInput {
 pub struct EditTextInput {
     #[schemars(description = "Absolute path to the file to edit")]
     pub path: String,
-    #[schemars(description = "SHA-256 hash of the entire file content from the last read")]
+    #[schemars(description = "6-character hash of the entire file content from the last read")]
     pub file_hash: String,
     pub operations: Vec<EditOperation>,
 }
