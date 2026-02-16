@@ -1,5 +1,8 @@
 mod agents;
+mod config;
+mod filesystem;
 mod hashline;
+mod gitignore;
 mod roots;
 mod tools;
 

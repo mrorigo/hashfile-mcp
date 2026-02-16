@@ -2,7 +2,7 @@ use rmcp::{
     handler::server::{router::tool::ToolRouter, wrapper::Parameters},
     schemars,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::fs;
 
 use crate::{agents, hashline};
@@ -42,6 +42,68 @@ pub struct EditOperation {
     pub content: Option<String>,
 }
 
+// Filesystem tool input structs
+
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
+pub struct ReadFileInput {
+    #[schemars(description = "Absolute path to the file to read")]
+    pub path: String,
+}
+
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
+pub struct ListDirectoryInput {
+    #[schemars(description = "Absolute path to the directory to list")]
+    pub path: String,
+}
+
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
+pub struct DirectoryTreeInput {
+    #[schemars(description = "Absolute path to the directory")]
+    pub path: String,
+    #[schemars(description = "Optional glob patterns to exclude")]
+    pub exclude_patterns: Option<Vec<String>>,
+}
+
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
+pub struct CreateDirectoryInput {
+    #[schemars(description = "Absolute path to the directory to create")]
+    pub path: String,
+}
+
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
+pub struct MoveFileInput {
+    #[schemars(description = "Absolute path to the source file or directory")]
+    pub source: String,
+    #[schemars(description = "Absolute path to the destination")]
+    pub destination: String,
+}
+
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
+pub struct WriteFileInput {
+    #[schemars(description = "Absolute path to the file to write")]
+    pub path: String,
+    #[schemars(description = "Content to write to the file")]
+    pub content: String,
+}
+
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
+pub struct ReadMultipleFilesInput {
+    #[schemars(description = "List of absolute paths to files to read")]
+    pub paths: Vec<String>,
+    #[schemars(description = "If true, return hashline-tagged content for editing. If false (default), return raw content")]
+    pub for_edit: Option<bool>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct FileReadResult {
+    pub path: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub content: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
+    pub success: bool,
+}
+
 #[derive(Debug, Clone)]
 pub struct HashfileServer {
     pub tool_router: ToolRouter<Self>,
@@ -68,6 +130,17 @@ impl HashfileServer {
         }
     }
 
+    #[rmcp::tool(description = "Read a file and return raw content (without hashline tags)")]
+    fn read_file(
+        &self,
+        Parameters(ReadFileInput { path }): Parameters<ReadFileInput>,
+    ) -> String {
+        match Self::read_file_impl(&path) {
+            Ok(content) => content,
+            Err(e) => format!("Error: {}", e),
+        }
+    }
+
     #[rmcp::tool(description = "Write content to a file, creating it if it doesn't exist")]
     fn write_text_file(&self, Parameters(input): Parameters<WriteTextInput>) -> String {
         match Self::write_text_file_impl(&input.path, &input.content) {
@@ -80,6 +153,56 @@ impl HashfileServer {
     fn edit_text_file(&self, Parameters(input): Parameters<EditTextInput>) -> String {
         match Self::edit_text_file_impl(&input.path, &input.file_hash, input.operations) {
             Ok(msg) => msg,
+            Err(e) => format!("Error: {}", e),
+        }
+    }
+
+    #[rmcp::tool(description = "List directory contents with [FILE] or [DIR] prefixes")]
+    fn list_directory(&self, Parameters(input): Parameters<ListDirectoryInput>) -> String {
+        match crate::filesystem::list_directory_impl(&input.path) {
+            Ok(result) => result,
+            Err(e) => format!("Error: {}", e),
+        }
+    }
+
+    #[rmcp::tool(description = "Get recursive directory tree in compact text format (like Unix tree command)")]
+    fn directory_tree(&self, Parameters(input): Parameters<DirectoryTreeInput>) -> String {
+        let patterns = input.exclude_patterns.unwrap_or_default();
+        match crate::filesystem::directory_tree_impl(&input.path, &patterns) {
+            Ok(result) => result,
+            Err(e) => format!("Error: {}", e),
+        }
+    }
+
+    #[rmcp::tool(description = "Create a directory, including parent directories if needed")]
+    fn create_directory(&self, Parameters(input): Parameters<CreateDirectoryInput>) -> String {
+        match crate::filesystem::create_directory_impl(&input.path) {
+            Ok(result) => result,
+            Err(e) => format!("Error: {}", e),
+        }
+    }
+
+    #[rmcp::tool(description = "Move or rename a file or directory")]
+    fn move_file(&self, Parameters(input): Parameters<MoveFileInput>) -> String {
+        match crate::filesystem::move_file_impl(&input.source, &input.destination) {
+            Ok(result) => result,
+            Err(e) => format!("Error: {}", e),
+        }
+    }
+
+    #[rmcp::tool(description = "Write raw UTF-8 content to a file (overwrites existing content)")]
+    fn write_file(&self, Parameters(input): Parameters<WriteFileInput>) -> String {
+        match crate::filesystem::write_file_impl(&input.path, &input.content) {
+            Ok(result) => result,
+            Err(e) => format!("Error: {}", e),
+        }
+    }
+
+    #[rmcp::tool(description = "Read multiple files in one operation, returns JSON array of results")]
+    fn read_multiple_files(&self, Parameters(input): Parameters<ReadMultipleFilesInput>) -> String {
+        let for_edit = input.for_edit.unwrap_or(false);
+        match crate::filesystem::read_multiple_files_impl(&input.paths, for_edit) {
+            Ok(result) => result,
             Err(e) => format!("Error: {}", e),
         }
     }
@@ -101,6 +224,14 @@ impl HashfileServer {
         );
 
         Ok(output)
+    }
+
+    fn read_file_impl(path: &str) -> anyhow::Result<String> {
+        // Check AGENTS.md constraints
+        agents::check_read_access(path)?;
+
+        let content = fs::read_to_string(path)?;
+        Ok(content)
     }
 
     fn write_text_file_impl(path: &str, content: &str) -> anyhow::Result<String> {

@@ -13,8 +13,6 @@ pub struct AgentsFrontmatter {
     pub read_only: Vec<String>,
     #[serde(default)]
     pub ignore: Vec<String>,
-    #[serde(skip)]
-    pub gitignore_patterns: Vec<String>,
 }
 
 /// Access level determined by AGENTS.md constraints
@@ -105,21 +103,6 @@ fn determine_access_level(
         return Ok(AccessLevel::Ignored);
     }
 
-    // Check .gitignore patterns
-    let mut gitignore_builder = GlobSetBuilder::new();
-    for pattern in &frontmatter.gitignore_patterns {
-        if !pattern.is_empty() {
-            let glob = Glob::new(pattern)
-                .map_err(|e| anyhow!("Invalid gitignore pattern '{}': {}", pattern, e))?;
-            gitignore_builder.add(glob);
-        }
-    }
-    let gitignore_set = gitignore_builder.build()?;
-
-    if gitignore_set.is_match(path) {
-        return Ok(AccessLevel::Ignored);
-    }
-
     Ok(AccessLevel::Allowed)
 }
 
@@ -135,18 +118,10 @@ pub fn check_read_access(path: &str) -> Result<()> {
 
     // Read and parse frontmatter
     let content = fs::read_to_string(&agents_md)?;
-    let mut frontmatter = match parse_frontmatter(&content)? {
+    let frontmatter = match parse_frontmatter(&content)? {
         Some(f) => f,
-        None => AgentsFrontmatter::default(),
+        None => return Ok(()), // No frontmatter, allow all
     };
-
-    // Load .gitignore patterns
-    let gitignore_files = crate::gitignore::find_gitignore_files(&path_buf);
-    for gitignore_path in gitignore_files {
-        if let Ok(patterns) = crate::gitignore::parse_gitignore(&gitignore_path) {
-            frontmatter.gitignore_patterns.extend(patterns);
-        }
-    }
 
     // Make path relative to AGENTS.md directory for matching
     let agents_dir = agents_md.parent().unwrap();
@@ -180,18 +155,10 @@ pub fn check_write_access(path: &str) -> Result<()> {
 
     // Read and parse frontmatter
     let content = fs::read_to_string(&agents_md)?;
-    let mut frontmatter = match parse_frontmatter(&content)? {
+    let frontmatter = match parse_frontmatter(&content)? {
         Some(f) => f,
-        None => AgentsFrontmatter::default(),
+        None => return Ok(()), // No frontmatter, allow all
     };
-
-    // Load .gitignore patterns
-    let gitignore_files = crate::gitignore::find_gitignore_files(&path_buf);
-    for gitignore_path in gitignore_files {
-        if let Ok(patterns) = crate::gitignore::parse_gitignore(&gitignore_path) {
-            frontmatter.gitignore_patterns.extend(patterns);
-        }
-    }
 
     // Make path relative to AGENTS.md directory for matching
     let agents_dir = agents_md.parent().unwrap();
@@ -255,7 +222,6 @@ ignore:
             forbidden: vec!["secrets/**".to_string()],
             read_only: vec!["**/*.lock".to_string()],
             ignore: vec!["node_modules/**".to_string()],
-            gitignore_patterns: vec![],
         };
 
         let path = Path::new("secrets/key.pem");
