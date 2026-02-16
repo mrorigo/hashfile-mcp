@@ -7,6 +7,7 @@ A Model Context Protocol (MCP) server that provides reliable file editing throug
 - **Hash-Anchored Editing**: Every line is tagged with a content hash, ensuring edits target the correct location even if line numbers change
 - **Content Verification**: File-level 6-character hashing prevents editing stale content
 - **Fuzzy Matching**: Automatically finds the correct line if content has shifted
+- **AGENTS.md Support**: Respects frontmatter constraints (`forbidden`, `read_only`, `ignore`) [Proposal](docs/agents.frontmatter.md) [docs](docs/agents-support.md)
 - **MCP Protocol**: Standard Model Context Protocol for AI agent integration
 
 ## Installation

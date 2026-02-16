@@ -5,7 +5,7 @@ use rmcp::{
 use serde::Deserialize;
 use std::fs;
 
-use crate::hashline;
+use crate::{agents, hashline};
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct ReadTextInput {
@@ -87,6 +87,9 @@ impl HashfileServer {
 
 impl HashfileServer {
     fn read_text_file_impl(path: &str) -> anyhow::Result<String> {
+        // Check AGENTS.md constraints
+        agents::check_read_access(path)?;
+
         let content = fs::read_to_string(path)?;
         let tagged = hashline::tag_content(&content);
         let file_hash = hashline::compute_file_hash(&content);
@@ -101,6 +104,9 @@ impl HashfileServer {
     }
 
     fn write_text_file_impl(path: &str, content: &str) -> anyhow::Result<String> {
+        // Check AGENTS.md constraints
+        agents::check_write_access(path)?;
+
         fs::write(path, content)?;
         Ok(format!("Successfully wrote {} bytes to {}", content.len(), path))
     }
@@ -110,6 +116,9 @@ impl HashfileServer {
         file_hash: &str,
         operations: Vec<EditOperation>,
     ) -> anyhow::Result<String> {
+        // Check AGENTS.md constraints
+        agents::check_write_access(path)?;
+
         let current_content = fs::read_to_string(path)?;
         let current_hash = hashline::compute_file_hash(&current_content);
 

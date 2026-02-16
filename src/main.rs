@@ -1,4 +1,6 @@
+mod agents;
 mod hashline;
+mod roots;
 mod tools;
 
 use rmcp::{model::*, tool_handler, transport::stdio, ServerHandler, ServiceExt};
