@@ -13,15 +13,7 @@
     {
       "registryType": "mcpb",
       "identifier": "https://github.com/mrorigo/hashfile-mcp/releases/download/v0.3.0/hashfile-mcp-aarch64-apple-darwin.tar.gz",
-      "fileSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "transport": {
-        "type": "stdio"
-      }
-    },
-    {
-      "registryType": "mcpb",
-      "identifier": "https://github.com/mrorigo/hashfile-mcp/releases/download/v0.3.0/hashfile-mcp-x86_64-apple-darwin.tar.gz",
-      "fileSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fileSha256": "96bdb6b2e729943779bc4e1d7f8dc08c1042294feecf819792154c4c9b338d2b",
       "transport": {
         "type": "stdio"
       }
@@ -29,7 +21,7 @@
     {
       "registryType": "mcpb",
       "identifier": "https://github.com/mrorigo/hashfile-mcp/releases/download/v0.3.0/hashfile-mcp-x86_64-unknown-linux-gnu.tar.gz",
-      "fileSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fileSha256": "88dda760109210684f3855e1b241e0e945a357b3e49772fcfefe4c156e8866e1",
       "transport": {
         "type": "stdio"
       }
@@ -37,7 +29,15 @@
     {
       "registryType": "mcpb",
       "identifier": "https://github.com/mrorigo/hashfile-mcp/releases/download/v0.3.0/hashfile-mcp-aarch64-unknown-linux-gnu.tar.gz",
-      "fileSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fileSha256": "f1c150884223fbc6196a33716604fe64d659b25b61973aa6f9601ca34c38c569",
+      "transport": {
+        "type": "stdio"
+      }
+    },
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/mrorigo/hashfile-mcp/releases/download/v0.3.0/hashfile-mcp-aarch64-unknown-linux-musl.tar.gz",
+      "fileSha256": "6bfae44a218f5fbb65f3a9e251a2bf38a87ec0881488106c33b71f72003f9fed",
       "transport": {
         "type": "stdio"
       }
@@ -45,7 +45,7 @@
     {
       "registryType": "mcpb",
       "identifier": "https://github.com/mrorigo/hashfile-mcp/releases/download/v0.3.0/hashfile-mcp-x86_64-pc-windows-msvc.zip",
-      "fileSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fileSha256": "6cf67b4397c1a7701bed77fdac351d6c5449d00491c88dcd40d22a497d6ead97",
       "transport": {
         "type": "stdio"
       }
