@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-02-16
+
+### Added
+- **Automatic `.gitignore` Support**: Seamless integration with existing `.gitignore` files for access control.
+  - Hierarchical parsing of `.gitignore` files from target directory up to root.
+  - Conversion of gitignore patterns to glob patterns for security checks.
+  - Precedence verification: `AGENTS.md` > `.gitignore`.
+- **MCP Registry Publishing**: Support for publishing to the official MCP Registry.
+  - `server.json` configuration for multi-platform MCPB (Binary) packages.
+  - Comprehensive publishing guide (`docs/registry-publishing.md`).
+  - Helper script `get_hashes.sh` for computing release artifact verification hashes.
+- **Documentation**:
+  - Detailed `.gitignore` support section in `README.md`.
+  - Updated "Access Control" feature card in landing page.
+  - New `PUBLISHING.md` guide for maintainers.
+
+### Changed
+- Refined access control logic to check `.gitignore` patterns in addition to `AGENTS.md` rules.
+- Updated `AgentsFrontmatter` to include dynamic `gitignore_patterns`.
+
 ## [0.2.0] - 2026-02-13
 
 ### Added

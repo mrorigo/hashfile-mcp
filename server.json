@@ -1,0 +1,54 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.mrorigo/hashfile",
+  "title": "Hashfile MCP",
+  "description": "Hash-anchored file editing with AGENTS.md access control and automatic .gitignore support",
+  "version": "0.3.0",
+  "repository": {
+    "url": "https://github.com/mrorigo/hashfile-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://mrorigo.github.io/hashfile-mcp",
+  "packages": [
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/mrorigo/hashfile-mcp/releases/download/v0.3.0/hashfile-mcp-aarch64-apple-darwin.tar.gz",
+      "fileSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "transport": {
+        "type": "stdio"
+      }
+    },
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/mrorigo/hashfile-mcp/releases/download/v0.3.0/hashfile-mcp-x86_64-apple-darwin.tar.gz",
+      "fileSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "transport": {
+        "type": "stdio"
+      }
+    },
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/mrorigo/hashfile-mcp/releases/download/v0.3.0/hashfile-mcp-x86_64-unknown-linux-gnu.tar.gz",
+      "fileSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "transport": {
+        "type": "stdio"
+      }
+    },
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/mrorigo/hashfile-mcp/releases/download/v0.3.0/hashfile-mcp-aarch64-unknown-linux-gnu.tar.gz",
+      "fileSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "transport": {
+        "type": "stdio"
+      }
+    },
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/mrorigo/hashfile-mcp/releases/download/v0.3.0/hashfile-mcp-x86_64-pc-windows-msvc.zip",
+      "fileSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
