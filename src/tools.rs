@@ -11,6 +11,10 @@ use crate::{agents, hashline};
 pub struct ReadTextInput {
     #[schemars(description = "Absolute path to the file to read")]
     pub path: String,
+    #[schemars(description = "Optional start line (1-indexed)")]
+    pub start_line: Option<usize>,
+    #[schemars(description = "Optional end line (1-indexed)")]
+    pub end_line: Option<usize>,
 }
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
@@ -122,9 +126,9 @@ impl HashfileServer {
     )]
     fn read_text_file(
         &self,
-        Parameters(ReadTextInput { path }): Parameters<ReadTextInput>,
+        Parameters(ReadTextInput { path, start_line, end_line }): Parameters<ReadTextInput>,
     ) -> String {
-        match Self::read_text_file_impl(&path) {
+        match Self::read_text_file_impl(&path, start_line, end_line) {
             Ok(output) => output,
             Err(e) => format!("Error: {}", e),
         }
@@ -209,19 +213,31 @@ impl HashfileServer {
 }
 
 impl HashfileServer {
-    fn read_text_file_impl(path: &str) -> anyhow::Result<String> {
+    fn read_text_file_impl(path: &str, start_line: Option<usize>, end_line: Option<usize>) -> anyhow::Result<String> {
         // Check AGENTS.md constraints
         agents::check_read_access(path)?;
 
         let content = fs::read_to_string(path)?;
-        let tagged = hashline::tag_content(&content);
         let file_hash = hashline::compute_file_hash(&content);
         let total_lines = content.lines().count();
 
-        let output = format!(
-            "[Metadata: total_lines={}, file_hash={}]\n{}",
-            total_lines, file_hash, tagged
-        );
+        let start = start_line.unwrap_or(1);
+        let end = end_line.unwrap_or(total_lines);
+
+        let tagged = hashline::tag_content_range(&content, start, end);
+
+        let output = if start == 1 && end >= total_lines {
+            format!(
+                "[Metadata: total_lines={}, file_hash={}]\n{}",
+                total_lines, file_hash, tagged
+            )
+        } else {
+            let actual_end = std::cmp::min(end, total_lines);
+            format!(
+                "[Metadata: total_lines={}, file_hash={}, displaying_lines={}-{}]\n{}",
+                total_lines, file_hash, start, actual_end, tagged
+            )
+        };
 
         Ok(output)
     }

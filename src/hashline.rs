@@ -13,9 +13,18 @@ pub fn hash_line(content: &str) -> String {
 
 /// Tags each line of the content with its line number and hash.
 pub fn tag_content(content: &str) -> String {
+    tag_content_range(content, 1, usize::MAX)
+}
+
+/// Tags lines within the specified 1-indexed range [start, end].
+pub fn tag_content_range(content: &str, start_line: usize, end_line: usize) -> String {
     let lines: Vec<&str> = content.lines().collect();
     let mut result = String::new();
-    for (i, line) in lines.iter().enumerate() {
+    
+    let start_idx = start_line.saturating_sub(1);
+    let end_idx = std::cmp::min(end_line, lines.len());
+
+    for (i, line) in lines.iter().enumerate().take(end_idx).skip(start_idx) {
         let h = hash_line(line);
         result.push_str(&format!("{}:{}|{}\n", i + 1, h, line));
     }
