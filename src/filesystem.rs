@@ -138,8 +138,8 @@ pub fn read_multiple_files_impl(paths: &[String], for_edit: bool) -> Result<Stri
                         let file_hash = crate::hashline::compute_file_hash(&content);
                         let total_lines = content.lines().count();
                         format!(
-                            "{}\n---\nhashline_version: 1\ntotal_lines: {}\nfile_hash: {}\n",
-                            tagged, total_lines, file_hash
+                            "[Metadata: total_lines={}, file_hash={}]\n{}",
+                            total_lines, file_hash, tagged
                         )
                     } else {
                         // Return raw content

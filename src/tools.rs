@@ -219,8 +219,8 @@ impl HashfileServer {
         let total_lines = content.lines().count();
 
         let output = format!(
-            "{}\n---\nhashline_version: 1\ntotal_lines: {}\nfile_hash: {}\n",
-            tagged, total_lines, file_hash
+            "[Metadata: total_lines={}, file_hash={}]\n{}",
+            total_lines, file_hash, tagged
         );
 
         Ok(output)
