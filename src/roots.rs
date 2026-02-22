@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::path::PathBuf;
 use rmcp::model::Root;
 use anyhow::{Result, anyhow};

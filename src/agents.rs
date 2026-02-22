@@ -135,10 +135,7 @@ pub fn check_read_access(path: &str) -> Result<()> {
 
     // Read and parse frontmatter
     let content = fs::read_to_string(&agents_md)?;
-    let mut frontmatter = match parse_frontmatter(&content)? {
-        Some(f) => f,
-        None => AgentsFrontmatter::default(),
-    };
+    let mut frontmatter = parse_frontmatter(&content)?.unwrap_or_default();
 
     // Load .gitignore patterns
     let gitignore_files = crate::gitignore::find_gitignore_files(&path_buf);
@@ -180,10 +177,7 @@ pub fn check_write_access(path: &str) -> Result<()> {
 
     // Read and parse frontmatter
     let content = fs::read_to_string(&agents_md)?;
-    let mut frontmatter = match parse_frontmatter(&content)? {
-        Some(f) => f,
-        None => AgentsFrontmatter::default(),
-    };
+    let mut frontmatter = parse_frontmatter(&content)?.unwrap_or_default();
 
     // Load .gitignore patterns
     let gitignore_files = crate::gitignore::find_gitignore_files(&path_buf);

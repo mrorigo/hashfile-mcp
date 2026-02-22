@@ -1,7 +1,7 @@
-use anyhow::Result;
+#![allow(dead_code)]
 
 /// Configuration for optional filesystem tools
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ServerConfig {
     pub enable_filesystem_tools: bool,
     pub enable_list_directory: bool,
@@ -10,20 +10,6 @@ pub struct ServerConfig {
     pub enable_move_file: bool,
     pub enable_write_file: bool,
     pub enable_read_multiple_files: bool,
-}
-
-impl Default for ServerConfig {
-    fn default() -> Self {
-        Self {
-            enable_filesystem_tools: false,
-            enable_list_directory: false,
-            enable_directory_tree: false,
-            enable_create_directory: false,
-            enable_move_file: false,
-            enable_write_file: false,
-            enable_read_multiple_files: false,
-        }
-    }
 }
 
 impl ServerConfig {
