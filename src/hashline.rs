@@ -95,12 +95,31 @@ pub fn resolve_anchor(lines: &[&str], anchor: &LineAnchor) -> Result<usize> {
             anchor.hash
         ))
     } else {
-        Err(anyhow!(
-            "Anchor {}:{} is ambiguous ({} matches found)",
-            anchor.line_num,
-            anchor.hash,
-            matches.len()
-        ))
+        // Tie-breaker: find the match closest to the requested line index
+        let mut closest_match = matches[0];
+        let mut min_distance = (closest_match as isize - idx as isize).abs();
+
+        for &m in matches.iter().skip(1) {
+            let dist = (m as isize - idx as isize).abs();
+            if dist < min_distance {
+                min_distance = dist;
+                closest_match = m;
+            }
+        }
+
+        // If the closest identical hash is structurally "nearby",
+        // tolerate the LLM hallucination and accept it.
+        if min_distance <= 3 {
+            Ok(closest_match)
+        } else {
+            Err(anyhow!(
+                "Anchor {}:{} is ambiguous ({} matches found). Closest match is {} lines away (max allowed is 3).",
+                anchor.line_num,
+                anchor.hash,
+                matches.len(),
+                min_distance
+            ))
+        }
     }
 }
 
@@ -209,6 +228,52 @@ mod tests {
 
         let result = apply_operations(content, ops)?;
         assert_eq!(result, "line1\nnew line 2\nline3\n");
+        Ok(())
+    }
+
+    #[test]
+    fn test_resolve_anchor_fuzzy_tolerance() -> Result<()> {
+        let lines = vec![
+            "def method(self):", // pos 0
+            "    pass",          // pos 1
+            "    @property",     // pos 2 (hash X)
+            "    def target_field(self):", // pos 3
+            "        return 1",  // pos 4
+            "    @property",     // pos 5 (hash X)
+            "    def db_collation(self):", // pos 6
+            "        return 2",  // pos 7
+            "    @property",     // pos 8 (hash X)
+        ];
+
+        let h_prop = hash_line("    @property");
+
+        // Exact match at line 6 (index 5)
+        let exact_anchor = format!("6:{}", h_prop).parse()?;
+        assert_eq!(resolve_anchor(&lines, &exact_anchor)?, 5);
+
+        // LLM hallucinated line 5 (index 4) instead of line 6 (index 5), a distance of 1.
+        // There are identical lines at 2, 5, and 8. The closest to index 4 is index 5.
+        // It should gracefully resolve to index 5.
+        let fuzzy_anchor = format!("5:{}", h_prop).parse()?;
+        assert_eq!(resolve_anchor(&lines, &fuzzy_anchor)?, 5);
+
+        // LLM hallucinates line 9 (index 8) but meant line 10 (which is out of bounds).
+        // It should match index 8.
+        let end_anchor = format!("10:{}", h_prop).parse()?;
+        assert_eq!(resolve_anchor(&lines, &end_anchor)?, 8);
+
+        // LLM hallucinates line 2 (index 1), aiming for index 2. Dist = 1.
+        let top_anchor = format!("2:{}", h_prop).parse()?;
+        assert_eq!(resolve_anchor(&lines, &top_anchor)?, 2);
+        
+        // LLM hallucination out of the 3-line threshold. 
+        // e.g. Line 15 (index 14). Closest is index 8. Distance = 14-8 = 6.
+        // This should trigger the ambiguity error because 6 > 3.
+        let far_anchor = format!("15:{}", h_prop).parse()?;
+        let res = resolve_anchor(&lines, &far_anchor);
+        assert!(res.is_err());
+        assert!(res.unwrap_err().to_string().contains("Closest match is 6 lines away"));
+
         Ok(())
     }
 }
