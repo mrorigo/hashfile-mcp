@@ -31,14 +31,15 @@ pub struct EditTextInput {
     pub path: String,
     #[schemars(description = "6-character hash of the entire file content from the last read")]
     pub file_hash: String,
+    #[schemars(description = "Array of surgical operations. IMPORTANT: Do NOT send unified diff strings (@@ ...) here. Use structured objects.")]
     pub operations: Vec<EditOperation>,
 }
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct EditOperation {
-    #[schemars(description = "Type of operation: replace, insert_after, insert_before, or delete")]
+    #[schemars(description = "Type of operation: replace, insert_after, insert_before, or delete. NEVER send a unified diff hunk.")]
     pub op_type: String,
-    #[schemars(description = "Anchor in lineNum:hash format")]
+    #[schemars(description = "Anchor in lineNum:hash format from 'read_text_file' (e.g. '42:a3')")]
     pub anchor: String,
     #[schemars(description = "Optional end anchor in lineNum:hash format for range operations")]
     pub end_anchor: Option<String>,
@@ -153,7 +154,9 @@ impl HashfileServer {
         }
     }
 
-    #[rmcp::tool(description = "Edit a file using hash-anchored operations")]
+    #[rmcp::tool(
+        description = "Apply hash-anchored edits. Do NOT use unified diffs (@@ ...). Provide structured 'EditOperation' objects."
+    )]
     fn edit_text_file(&self, Parameters(input): Parameters<EditTextInput>) -> String {
         match Self::edit_text_file_impl(&input.path, &input.file_hash, input.operations) {
             Ok(msg) => msg,

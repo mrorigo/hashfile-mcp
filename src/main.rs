@@ -14,7 +14,7 @@ use crate::tools::HashfileServer;
 impl ServerHandler for HashfileServer {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
-            instructions: Some("Hashfile MCP Server - provides reliable file editing using hash-anchored operations.".into()),
+            instructions: Some("Hashfile MCP Server provides surgical file editing using hash-anchored operations. IMPORTANT: Do NOT use unified diff format (@@ ...). Use the 'edit_text_file' tool with structured 'EditOperation' objects and 'lineNum:hash' anchors derived from 'read_text_file'.".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
             ..Default::default()
         }
